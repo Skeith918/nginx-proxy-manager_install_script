@@ -16,7 +16,6 @@ apt-get remove python-configparser
 
 #DOCKER
 curl -sSL https://get.docker.com | sh
-usermod -aG docker pi
 pip3 install docker-compose
 
 #SETUP
