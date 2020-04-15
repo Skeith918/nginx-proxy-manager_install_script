@@ -8,10 +8,7 @@ read -e -i "$npmpasswd" -s -p "Set DB user password: " input
 npmpasswd="${input:-$npmpasswd}"
 
 #SECURITY AND UPDATE
-apt update
-apt install gnupg2 software-properties-common
-apt upgrade -y
-apt install unattended-upgrades -y
+apt update && apt install gnupg2 software-properties-common -y && apt upgrade -y && apt install unattended-upgrades -y
 
 #BASIC DEPENDENCIES
 apt install git curl apt-transport-https ca-certificates libffi-dev libssl-dev python3 python3-pip -y
@@ -23,8 +20,7 @@ usermod -aG docker pi
 pip3 install docker-compose
 
 #SETUP
-cp config.json.orig config.json
-cp docker-compose.yaml.orig docker-compose.yaml
+cp config.json.orig config.json && cp docker-compose.yaml.orig docker-compose.yaml
 sed -i "s/psswd/$npmpasswd/g" config.json
 sed -i "s/rootpass/$rootpasswd/g" docker-compose.yaml
 sed -i "s/psswd/$npmpasswd/g" docker-compose.yaml
