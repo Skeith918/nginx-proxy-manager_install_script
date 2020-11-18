@@ -54,7 +54,7 @@ function deploy()
 }
 
 #INIT SCRIPT WITH USER PARAMETERS
-#init
+init
 
 #UPDATE PACKAGES
 while true
@@ -75,12 +75,26 @@ done
 
 #CHECK DOCKER INSTALLATION
 dcis=$(pip3 list | grep docker-compose | tail -n1 | awk {print'$1'})
-echo "dcis = "$dcis
 if [[ $dcis = "docker-compose" ]];then
   echo "docker-compose is installed"
 else
-  echo "docker-compose is not installed"
-  #docker
+  while true
+  do
+    read -r -p "docker-compose is not installed, do you want install it with this script ? [Yes/No]" input
+    case $input in [yY][eE][sS]|[yY])
+      docker
+      break
+      ;;
+    [nN][oO]|[nN])
+      echo "you cannot run this script without docker-compose, please install it manually or with this script."
+      exit
+      break
+      ;;
+    *)
+      echo "Please answer yes or no.."
+      ;;
+    esac
+  done
 fi
 #DEPLOY NPM
-#deploy
+deploy
