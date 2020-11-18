@@ -16,8 +16,8 @@ services:
       DB_MYSQL_NAME: "npm"
       DISABLE_IPV6: "true"
     volumes:
-      - ./data:/data
-      - ./letsencrypt:/etc/letsencrypt
+      - PATH/npm-reverse-proxy/data:/data
+      - PATH/npm-reverse-proxy/letsencrypt:/etc/letsencrypt
     depends_on:
       - npm-db
 
@@ -31,4 +31,4 @@ services:
       MYSQL_USER: 'npm'
       MYSQL_PASSWORD: 'passwd'
     volumes:
-      - ./data/mysql:/var/lib/mysql
+      - PATH/npm-reverse-proxy/data/mysql:/var/lib/mysql

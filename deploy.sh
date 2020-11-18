@@ -1,31 +1,86 @@
 #!/bin/bash
 
-#SET PASSWORD
-read -s -p "Set DB root password: " rootpasswd
+function init ()
+{
+  #SET DATABASE PASSWORD
+  read -s -p "Please, provide a root password for database: " dbrootpasswd
+  read -s -p "Please, provide a password for user of npm database: " dbnpmpasswd
 
-read -s -p "Set DB user password: " npmpasswd
+  #SET CONTAINER VOLUMES INSTALLATION PATH
+  read -p "Please, provide an installation path for npm application volumes (must be an absolute path !!)" installpath
 
-#SECURITY AND UPDATE
-apt update && apt install gnupg2 software-properties-common -y && apt upgrade -y && apt install unattended-upgrades -y
+  #CHECK IF VOLUME PATH EXIST
+  if [ -d $volpath ];then
+    echo "directory "$volpath" already exist"
+  else
+    echo "creating "$volpath" directory"
+    mkdir -p $volpath/npm-reverse-proxy
+  fi
+}
 
-#BASIC DEPENDENCIES
-apt install git curl apt-transport-https ca-certificates libffi-dev libssl-dev python3 python3-pip -y
-apt-get remove python-configparser
+function update ()
+{
+  #SECURITY AND UPDATE
+  apt update && apt install gnupg2 software-properties-common -y && apt upgrade -y && apt install unattended-upgrades -y
 
-#DOCKER
-curl -sSL https://get.docker.com | sh
-pip3 install docker-compose
+  #BASIC DEPENDENCIES
+  apt install git curl apt-transport-https ca-certificates libffi-dev libssl-dev python3 python3-pip -y
+  apt-get remove python-configparser
+}
 
-#SETUP
-cp docker-compose.yaml.orig docker-compose.yaml
-sed -i "s/rootpass/$rootpasswd/g" docker-compose.yaml
-sed -i "s/passwd/$npmpasswd/g" docker-compose.yaml
+function docker ()
+{
+  # DOCKER-CE AND DOCKER-COMPOSE INSTALLATION
+  curl -sSL https://get.docker.com | sh
+  pip3 install docker-compose
+}
 
-#DEPLOY
-docker-compose up -d
+function deploy()
+{
+  #SETUP
+  cp docker-compose.yaml.orig docker-compose.yaml
+  sed -i "s/PATH/$volpath/g" docker-compose.yaml
+  sed -i "s/rootpass/$dbrootpasswd/g" docker-compose.yaml
+  sed -i "s/passwd/$dbnpmpasswd/g" docker-compose.yaml
 
-#CLEAN
-#rm -f docker-compose.yaml
+  #DEPLOY CONTAINER
+  docker-compose up -d
 
-echo "Your instance is deployed on http://YOUR_IP_ADRESS:81"
-echo "default login are : admin@example.com / changeme"
+  #CLEAN DOCKER-COMPOSE FROM REPO AND MOVE IT TO INSTALLATION PATH
+  mv docker-compose.yaml $volpath/npm-reverse-proxy/docker-compose.yaml
+
+  echo "Your instance is deployed on http://YOUR_IP_ADRESS:81"
+  echo "default login are : admin@example.com / changeme"
+}
+
+#INIT SCRIPT WITH USER PARAMETERS
+#init
+
+#UPDATE PACKAGES
+while true
+do
+  read -r -p "Do you want to update and upgrade packages ? [Yes/No]" input
+  case $input in [yY][eE][sS]|[yY])
+    update
+    break
+    ;;
+  [nN][oO]|[nN])
+    break
+    ;;
+  *)
+    echo "Please answer yes or no.."
+    ;;
+  esac
+done
+
+#CHECK DOCKER INSTALLATION
+dcis=$(docker-compose -v | awk {print'$2'})
+echo "dcis = "$dcis
+if [ $dcis != "version" ];then
+  echo "docker-compose is not installed"
+  #docker
+else
+  echo "docker-compose is installed"
+fi
+#DEPLOY NPM
+#deploy
