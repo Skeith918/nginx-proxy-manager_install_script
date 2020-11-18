@@ -26,7 +26,7 @@ sed -i "s/passwd/$npmpasswd/g" docker-compose.yaml
 docker-compose up -d
 
 #CLEAN
-rm -f docker-compose.yaml
+#rm -f docker-compose.yaml
 
 echo "Your instance is deployed on http://YOUR_IP_ADRESS:81"
 echo "default login are : admin@example.com / changeme"
