@@ -17,8 +17,7 @@ curl -sSL https://get.docker.com | sh
 pip3 install docker-compose
 
 #SETUP
-cp config.json.orig config.json && cp docker-compose.yaml.orig docker-compose.yaml
-sed -i "s/passwd/$npmpasswd/g" config.json
+cp docker-compose.yaml.orig docker-compose.yaml
 sed -i "s/rootpass/$rootpasswd/g" docker-compose.yaml
 sed -i "s/passwd/$npmpasswd/g" docker-compose.yaml
 
