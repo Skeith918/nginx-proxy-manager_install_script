@@ -9,8 +9,7 @@ function init ()
   echo -e "\n"
 
   #SET CONTAINER VOLUMES INSTALLATION PATH
-  read -e -p "Please, provide an installation path for npm application volumes (must be an absolute path !!): " volpath
-  echo -e "\n"
+  read -e -p "Please, provide an installation absolute path for volumes: " volpath
 
   #CHECK IF VOLUME PATH EXIST
   if [ -d $volpath ];then
@@ -40,18 +39,17 @@ function docker ()
 
 function deploy()
 {
+
   #SETUP
   cp docker-compose.yaml.orig docker-compose.yaml
-  sed -i "s/installpath/$volpath/g" docker-compose.yaml
-  sed -i "s/rootpass/$dbrootpasswd/g" docker-compose.yaml
+  sed -i 's|instdir|'$volpath'|g' docker-compose.yaml
+  sed -i "s/rootpasswd/$dbrootpasswd/g" docker-compose.yaml
   sed -i "s/passwd/$dbnpmpasswd/g" docker-compose.yaml
 
   #DEPLOY CONTAINER
   docker-compose up -d
 
   #CLEAN DOCKER-COMPOSE FROM REPO AND MOVE IT TO INSTALLATION PATH
-  rm -rf $volpath/npm-reverse-proxy/docker-compose.yaml.bak
-  mv $volpath/npm-reverse-proxy/docker-compose.yaml $volpath/npm-reverse-proxy/docker-compose.yaml.bak
   mv docker-compose.yaml $volpath/npm-reverse-proxy/docker-compose.yaml
 
   echo "Your instance is deployed on http://YOUR_IP_ADRESS:81"
@@ -79,7 +77,7 @@ do
 done
 
 #CHECK DOCKER INSTALLATION
-dcis=$(pip3 list | grep docker-compose | tail -n1 | awk {print'$1'})
+dcis=$(pip3 list 2>/dev/null | grep docker-compose | tail -n1 | awk {print'$1'})
 if [[ $dcis = "docker-compose" ]];then
   echo "docker-compose is installed"
 else
