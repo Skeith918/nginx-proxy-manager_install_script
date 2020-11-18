@@ -3,11 +3,11 @@
 function init ()
 {
   #SET DATABASE PASSWORD
-  read -s -p "Please, provide a root password for database: " dbrootpasswd
-  read -s -p "Please, provide a password for user of npm database: " dbnpmpasswd
+  read -s -e -p "Please, provide a root password for database: \n" dbrootpasswd
+  read -s -e -p "Please, provide a password for user of npm database: \n" dbnpmpasswd
 
   #SET CONTAINER VOLUMES INSTALLATION PATH
-  read -p "Please, provide an installation path for npm application volumes (must be an absolute path !!)" installpath
+  read -e -p "Please, provide an installation path for npm application volumes (must be an absolute path !!): \n" volpath
 
   #CHECK IF VOLUME PATH EXIST
   if [ -d $volpath ];then
