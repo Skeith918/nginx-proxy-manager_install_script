@@ -19,6 +19,8 @@ services:
       - db
   db:
     image: yobasystems/alpine-mariadb:latest
+    ports:
+      - '3306:3306'
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: "rootpass"
