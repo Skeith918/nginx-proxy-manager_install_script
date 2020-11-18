@@ -20,9 +20,9 @@ pip3 install docker-compose
 
 #SETUP
 cp config.json.orig config.json && cp docker-compose.yaml.orig docker-compose.yaml
-sed -i "s/psswd/$npmpasswd/g" config.json
+sed -i "s/passwd/$npmpasswd/g" config.json
 sed -i "s/rootpass/$rootpasswd/g" docker-compose.yaml
-sed -i "s/psswd/$npmpasswd/g" docker-compose.yaml
+sed -i "s/passwd/$npmpasswd/g" docker-compose.yaml
 
 #DEPLOY
 docker-compose up -d
@@ -30,5 +30,5 @@ docker-compose up -d
 #CLEAN
 rm -f docker-compose.yaml
 
-echo "Your instance is deployed on http://IP:81"
+echo "Your instance is deployed on http://YOUR_IP_ADRESS:81"
 echo "default login are : admin@example.com / changeme"
