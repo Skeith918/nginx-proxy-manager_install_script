@@ -74,13 +74,13 @@ do
 done
 
 #CHECK DOCKER INSTALLATION
-dcis=$(docker-compose -v | awk {print'$2'})
+dcis=$(pip3 list | grep docker-compose | tail -n1 | awk {print'$1'})
 echo "dcis = "$dcis
-if [ $dcis != "version" ];then
+if [[ $dcis = "docker-compose" ]];then
+  echo "docker-compose is installed"
+else
   echo "docker-compose is not installed"
   #docker
-else
-  echo "docker-compose is installed"
 fi
 #DEPLOY NPM
 #deploy
