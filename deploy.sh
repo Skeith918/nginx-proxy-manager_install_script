@@ -3,11 +3,14 @@
 function init ()
 {
   #SET DATABASE PASSWORD
-  read -s -e -p "Please, provide a root password for database: \n" dbrootpasswd
-  read -s -e -p "Please, provide a password for user of npm database: \n" dbnpmpasswd
+  read -s -e -p "Please, provide a root password for database: " dbrootpasswd
+  echo -e "\n"
+  read -s -e -p "Please, provide a password for user of npm database: " dbnpmpasswd
+  echo -e "\n"
 
   #SET CONTAINER VOLUMES INSTALLATION PATH
-  read -e -p "Please, provide an installation path for npm application volumes (must be an absolute path !!): \n" volpath
+  read -e -p "Please, provide an installation path for npm application volumes (must be an absolute path !!): " volpath
+  echo -e "\n"
 
   #CHECK IF VOLUME PATH EXIST
   if [ -d $volpath ];then
@@ -39,7 +42,7 @@ function deploy()
 {
   #SETUP
   cp docker-compose.yaml.orig docker-compose.yaml
-  sed -i "s/PATH/$volpath/g" docker-compose.yaml
+  sed -i "s/installpath/$volpath/g" docker-compose.yaml
   sed -i "s/rootpass/$dbrootpasswd/g" docker-compose.yaml
   sed -i "s/passwd/$dbnpmpasswd/g" docker-compose.yaml
 
@@ -47,6 +50,8 @@ function deploy()
   docker-compose up -d
 
   #CLEAN DOCKER-COMPOSE FROM REPO AND MOVE IT TO INSTALLATION PATH
+  rm -rf $volpath/npm-reverse-proxy/docker-compose.yaml.bak
+  mv $volpath/npm-reverse-proxy/docker-compose.yaml $volpath/npm-reverse-proxy/docker-compose.yaml.bak
   mv docker-compose.yaml $volpath/npm-reverse-proxy/docker-compose.yaml
 
   echo "Your instance is deployed on http://YOUR_IP_ADRESS:81"
