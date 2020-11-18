@@ -41,7 +41,7 @@ function deploy()
 {
 
   #SETUP
-  cp docker-compose.yaml.orig docker-compose.yaml
+  cp docker-compose.yaml.sample docker-compose.yaml
   sed -i 's|instdir|'$volpath'|g' docker-compose.yaml
   sed -i "s/rootpasswd/$dbrootpasswd/g" docker-compose.yaml
   sed -i "s/passwd/$dbnpmpasswd/g" docker-compose.yaml
