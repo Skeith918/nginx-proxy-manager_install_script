@@ -1,11 +1,9 @@
 #!/bin/bash
 
 #SET PASSWORD
-read -e -i "$rootpasswd" -s -p "Set DB root password: " input
-rootpasswd="${input:-$rootpasswd}"
+read -s -p "Set DB root password: " rootpasswd
 
-read -e -i "$npmpasswd" -s -p "Set DB user password: " input
-npmpasswd="${input:-$npmpasswd}"
+read -s -p "Set DB user password: " npmpasswd
 
 #SECURITY AND UPDATE
 apt update && apt install gnupg2 software-properties-common -y && apt upgrade -y && apt install unattended-upgrades -y
